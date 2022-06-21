@@ -1,11 +1,11 @@
 //
 //  index.js
-//  live-streaming-js
+//  live-streaming-nodejs
 //
 //  Created by Sven Herzberg on 2022-06-20.
 //
 
-const ably = require('ably')
+const { Realtime } = require('ably')
 
 const secret = 'YOUR-API-KEY'
 const instruments = [
@@ -23,11 +23,10 @@ async function liveStreaming () {
     }
   })
   const {user_id, token, expires_at} = await response.json()
-  console.log(user_id, token, expires_at)
   // **NOTE:** Use `expires_at` to reconnect, because this connection will stop
   // receiving data.
 
-  const connection = new ably.Realtime({
+  const connection = new Realtime({
     token: token,
     transportParams: { remainPresentFor: 1000 }
   })
@@ -35,6 +34,7 @@ async function liveStreaming () {
   const channelQuotes = connection.channels.get(user_id)
   channelQuotes.subscribe((message) => {
     const {name, data} = message
+    console.log("message:", name, data)
     switch (name) {
     case 'quotes':
       console.log('quotes', data)
@@ -46,7 +46,6 @@ async function liveStreaming () {
   const channelSubscriptions = connection.channels.get(`${user_id}.subscriptions`)
   channelSubscriptions.publish('isins', instruments.join(','), (err) => {
     console.log('publish subscriptions error', err)
-    
   })
   console.log('awaiting messages…')
 }
