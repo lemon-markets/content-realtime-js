@@ -25,12 +25,13 @@ async function liveStreaming () {
   const {user_id, token, expires_at} = await response.json()
   // **NOTE:** Use `expires_at` to reconnect, because this connection will stop
   // receiving data.
+  console.log("token expires at:", Date(expires_at))
 
   const connection = new Realtime({
     token: token,
     transportParams: { remainPresentFor: 1000 }
   })
-  
+
   const channelQuotes = connection.channels.get(user_id)
   channelQuotes.subscribe((message) => {
     const {name, data} = message

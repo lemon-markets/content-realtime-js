@@ -1,6 +1,6 @@
 # Live Streaming for 🍋.markets
 
-This is a small example about using the live streaming API from [lemon.markets](https://lemon.markets/) using `node.js`.
+This is a small example about using the [live streaming API](https://docs.lemon.markets/live-streaming/overview) from [lemon.markets](https://lemon.markets/) using `node.js`.
 
 ## Quick Start
 
