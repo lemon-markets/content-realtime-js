@@ -7,7 +7,9 @@
 
 const { Realtime } = require('ably')
 
+// This is your market data API key: https://docs.lemon.markets/authentication
 const secret = 'YOUR-API-KEY'
+
 const instruments = [
   'US64110L1061', // Netflix
   'US88160R1014', // Tesla
@@ -16,6 +18,12 @@ const instruments = [
 liveStreaming()
 
 async function liveStreaming () {
+  if (process.version < 'v17.5') {
+    throw Error(`Node.js introduced fetch() in version v17.5. This is node.js ${process.version}. Please update.`)
+  }
+  if (typeof fetch !== 'function') {
+    throw Error(`Node.js versions prior to v18 need the command line option '--experimental-fetch'. This is node.js ${process.version}`)
+  }
   const response = await fetch('https://realtime.lemon.markets/v1/auth', {
     method: 'POST',
     headers: {
@@ -35,7 +43,6 @@ async function liveStreaming () {
   const channelQuotes = connection.channels.get(user_id)
   channelQuotes.subscribe((message) => {
     const {name, data} = message
-    console.log("message:", name, data)
     switch (name) {
     case 'quotes':
       console.log('quotes', data)
